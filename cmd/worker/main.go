@@ -39,6 +39,9 @@ import (
 
 	cloudinfoapi "github.com/banzaicloud/pipeline/.gen/cloudinfo"
 	anchore2 "github.com/banzaicloud/pipeline/internal/anchore"
+	"github.com/banzaicloud/pipeline/internal/app/pipeline/process"
+	processlogactivity "github.com/banzaicloud/pipeline/internal/app/pipeline/process/activity"
+	"github.com/banzaicloud/pipeline/internal/app/pipeline/process/processadapter"
 	cluster2 "github.com/banzaicloud/pipeline/internal/cluster"
 	intClusterAuth "github.com/banzaicloud/pipeline/internal/cluster/auth"
 	"github.com/banzaicloud/pipeline/internal/cluster/clusteradapter"
@@ -298,6 +301,12 @@ func main() {
 
 		commonSecretStore := commonadapter.NewSecretStore(secret.Store, commonadapter.OrgIDContextExtractorFunc(auth.GetCurrentOrganizationID))
 		configFactory := kubernetes.NewConfigFactory(commonSecretStore)
+
+		processService := process.NewService(processadapter.NewGormStore(db))
+		processLogActivity := processlogactivity.NewProcessLogActivity(processService)
+
+		activity.RegisterWithOptions(processLogActivity.ExecuteProcessLog, activity.RegisterOptions{Name: processlogactivity.ProcessLogActivityName})
+		activity.RegisterWithOptions(processLogActivity.ExecuteProcessEvent, activity.RegisterOptions{Name: processlogactivity.ProcessEventActivityName})
 
 		// Cluster setup
 		{

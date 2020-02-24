@@ -18038,6 +18038,145 @@ paths:
       summary: List cluser nodepool labels
       tags:
       - clusters
+  /api/v1/orgs/{orgId}/processes:
+    get:
+      description: List processes in Pipeline
+      operationId: ListProcesses
+      parameters:
+      - description: Organization identifier
+        explode: false
+        in: path
+        name: orgId
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - description: Type of processes to query
+        explode: true
+        in: query
+        name: type
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: The id of the resource to list processes for
+        explode: true
+        in: query
+        name: resourceId
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListProcessesResponse'
+          description: Processes listed
+        default:
+          content:
+            application/json:
+              examples:
+                BadRequest:
+                  value:
+                    code: 400
+                    message: Invalid request
+                    error: Failed to parse request.
+                Unauthorized:
+                  value:
+                    code: 401
+                    message: Unauthorized
+                    error: Unauthorized
+                OrganizationNotFound:
+                  value:
+                    code: 404
+                    message: Organization not found
+                    error: Organization not found
+                SecretAlreadyExists:
+                  value:
+                    code: 409
+                    message: Secret already exists
+                    error: Secret already exists
+                InternalServerError:
+                  value:
+                    code: 500
+                    message: Something went wrong
+                    error: Something went wrong
+              schema:
+                $ref: '#/components/schemas/CommonError'
+            application/problem+json:
+              examples:
+                BadRequest:
+                  value:
+                    type: about:blank
+                    title: Invalid request
+                    status: 400
+                    detail: Failed to parse request.
+                    instance: ""
+                    code: 400
+                    message: Failed to parse request.
+                    error: Invalid request
+                Unauthorized:
+                  value:
+                    type: about:blank
+                    title: Unauthorized
+                    status: 401
+                    detail: You are unauthorized to access this resource.
+                    instance: ""
+                    code: 401
+                    message: You are unauthorized to access this resource.
+                    error: Unauthorized
+                AccessDenied:
+                  value:
+                    type: about:blank
+                    title: Access denied
+                    status: 403
+                    detail: You are unauthorized to perform this action access this
+                      resource.
+                    instance: ""
+                    code: 403
+                    message: You are unauthorized to perform this action access this
+                      resource.
+                    error: Access denied
+                OrganizationNotFound:
+                  value:
+                    type: about:blank
+                    title: Organization not found
+                    status: 404
+                    detail: Organization not found
+                    instance: ""
+                    code: 404
+                    message: Organization not found
+                    error: Organization not found
+                SecretAlreadyExists:
+                  value:
+                    type: about:blank
+                    title: Secret already exists
+                    status: 409
+                    detail: Secret already exists
+                    instance: ""
+                    code: 409
+                    message: Secret already exists
+                    error: Secret already exists
+                InternalServerError:
+                  value:
+                    type: about:blank
+                    title: Internal server error
+                    status: 500
+                    detail: Something went wrong
+                    instance: ""
+                    code: 500
+                    message: Something went wrong
+                    error: Internal server error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Internal server error
+      security:
+      - bearerAuth: []
+      summary: List processes in Pipeline
+      tags:
+      - processes
 components:
   parameters:
     orgId:
@@ -22863,6 +23002,52 @@ components:
         name: name
       properties:
         name:
+          type: string
+      type: object
+    ListProcessesResponse:
+      additionalProperties:
+        items:
+          $ref: '#/components/schemas/Process'
+        type: array
+      type: object
+    Process:
+      properties:
+        id:
+          type: string
+        parentId:
+          type: string
+        orgId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+        resourceId:
+          type: string
+        status:
+          type: string
+        startedAt:
+          format: date-time
+          type: string
+        finishedAt:
+          format: date-time
+          nullable: true
+          type: string
+        events:
+          items:
+            $ref: '#/components/schemas/ProcessEvent'
+          type: array
+      type: object
+    ProcessEvent:
+      properties:
+        processId:
+          type: string
+        name:
+          type: string
+        log:
+          type: string
+        timestamp:
+          format: date-time
           type: string
       type: object
     CreatePKEClusterKubernetes_oidc:
