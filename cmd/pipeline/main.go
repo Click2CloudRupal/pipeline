@@ -1199,10 +1199,10 @@ func main() {
 		}
 		defer server.Close()
 
-		logger.Info("listening on address", map[string]interface{}{"address": config.Pipeline.Addr})
-
 		ln, err := net.Listen("tcp", config.Pipeline.Addr)
 		emperror.Panic(err)
+
+		scheme := "http"
 
 		caCertFile, certFile, keyFile := config.Pipeline.CACertFile, config.Pipeline.CertFile, config.Pipeline.KeyFile
 		if certFile != "" && keyFile != "" {
@@ -1219,7 +1219,10 @@ func main() {
 			tlsConfig.Certificates = []tls.Certificate{serverCertificate}
 
 			ln = tls.NewListener(ln, tlsConfig)
+			scheme = "https"
 		}
+
+		logger.Info("listening on address", map[string]interface{}{"address": config.Pipeline.Addr, "scheme": scheme})
 
 		group.Add(appkitrun.LogServe(logger)(appkitrun.HTTPServe(server, ln, 5*time.Second)))
 	}
