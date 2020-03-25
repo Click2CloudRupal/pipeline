@@ -52,7 +52,7 @@ type processEventModel struct {
 	ProcessID string
 	Log       string    `gorm:"not null"`
 	Name      string    `gorm:"not null"`
-	Timestamp time.Time `gorm:"index:idx_timestamp;default:current_timestamp;not null"`
+	Timestamp time.Time `gorm:"default:current_timestamp;not null"`
 }
 
 // TableName changes the default table name.
