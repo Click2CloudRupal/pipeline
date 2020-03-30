@@ -17,6 +17,7 @@ CREATE TABLE "public"."process_events" (
     "process_id" text,
     "log" text NOT NULL,
     "name" text NOT NULL,
+    "status" text NOT NULL,
     "timestamp" timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT "process_events_process_id_processes_id_foreign" FOREIGN KEY ("process_id") REFERENCES "public"."processes"("id") ON DELETE RESTRICT ON UPDATE RESTRICT
 );

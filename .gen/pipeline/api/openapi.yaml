@@ -18057,6 +18057,8 @@ paths:
         name: type
         required: false
         schema:
+          enum:
+          - cluster-upgrade
           type: string
         style: form
       - description: The id of the resource to list processes for
@@ -23021,10 +23023,16 @@ components:
         name:
           type: string
         type:
+          enum:
+          - cluster-upgrade
           type: string
         resourceId:
           type: string
         status:
+          enum:
+          - running
+          - failed
+          - finished
           type: string
         startedAt:
           format: date-time
@@ -23045,6 +23053,12 @@ components:
         name:
           type: string
         log:
+          type: string
+        status:
+          enum:
+          - running
+          - failed
+          - finished
           type: string
         timestamp:
           format: date-time

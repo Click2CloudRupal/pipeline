@@ -3791,6 +3791,7 @@ paths:
                     description: Type of processes to query
                     schema:
                         type: string
+                        enum: [cluster-upgrade]
                 -
                     name: resourceId
                     in: query
@@ -8183,10 +8184,12 @@ components:
                     type: integer
                 type:
                     type: string
+                    enum: [cluster-upgrade]
                 resourceId:
                     type: string
                 status:
                     type: string
+                    enum: [running, failed, finished]
                 startedAt:
                     type: string
                     format: date-time
@@ -8208,7 +8211,9 @@ components:
                     type: string
                 log:
                     type: string
+                status:
+                    type: string
+                    enum: [running, failed, finished]
                 timestamp:
                     type: string
                     format: date-time
-                                

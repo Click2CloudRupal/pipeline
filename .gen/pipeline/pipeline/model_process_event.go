@@ -22,5 +22,7 @@ type ProcessEvent struct {
 
 	Log string `json:"log,omitempty"`
 
+	Status string `json:"status,omitempty"`
+
 	Timestamp time.Time `json:"timestamp,omitempty"`
 }

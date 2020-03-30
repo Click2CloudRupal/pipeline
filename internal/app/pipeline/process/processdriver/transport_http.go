@@ -76,7 +76,7 @@ func decodeListProcessesHTTPRequest(_ context.Context, r *http.Request) (interfa
 	org := auth.GetCurrentOrganization(r)
 
 	query := process.Process{
-		OrgID: org.ID,
+		OrgId: int32(org.ID),
 	}
 
 	values := r.URL.Query()
@@ -86,7 +86,7 @@ func decodeListProcessesHTTPRequest(_ context.Context, r *http.Request) (interfa
 	}
 
 	if rt := values["resourceId"]; len(rt) > 0 {
-		query.ResourceID = rt[0]
+		query.ResourceId = rt[0]
 	}
 
 	return ListProcessesRequest{Query: query}, nil

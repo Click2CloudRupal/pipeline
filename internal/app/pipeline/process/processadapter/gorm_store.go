@@ -52,6 +52,7 @@ type processEventModel struct {
 	ProcessID string
 	Log       string    `gorm:"not null"`
 	Name      string    `gorm:"not null"`
+	Status    string    `gorm:"not null"`
 	Timestamp time.Time `gorm:"default:current_timestamp;not null"`
 }
 
@@ -85,13 +86,13 @@ func (s *GormStore) ListProcesses(ctx context.Context, query process.Process) ([
 
 	for _, pm := range processes {
 		p := process.Process{
-			ID:         pm.ID,
-			ParentID:   pm.ParentID,
-			OrgID:      pm.OrgID,
+			Id:         pm.ID,
+			ParentId:   pm.ParentID,
+			OrgId:      int32(pm.OrgID),
 			Name:       pm.Name,
 			StartedAt:  pm.StartedAt,
 			FinishedAt: pm.FinishedAt,
-			ResourceID: pm.ResourceID,
+			ResourceId: pm.ResourceID,
 			Type:       pm.Type,
 			Status:     pm.Status,
 		}
@@ -105,7 +106,7 @@ func (s *GormStore) ListProcesses(ctx context.Context, query process.Process) ([
 
 		for _, em := range processEvents {
 			p.Events = append(p.Events, process.ProcessEvent{
-				ProcessID: em.ProcessID,
+				ProcessId: em.ProcessID,
 				Name:      em.Name,
 				Log:       em.Log,
 				Timestamp: em.Timestamp,
@@ -120,18 +121,18 @@ func (s *GormStore) ListProcesses(ctx context.Context, query process.Process) ([
 
 // LogProcess logs a process entry
 func (s *GormStore) LogProcess(ctx context.Context, p process.Process) error {
-	existing := processModel{ID: p.ID, ParentID: p.ParentID}
+	existing := processModel{ID: p.Id, ParentID: p.ParentId}
 
 	err := s.db.Find(&existing).Error
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			pm := processModel{
-				ID:         p.ID,
-				ParentID:   p.ParentID,
-				OrgID:      p.OrgID,
+				ID:         p.Id,
+				ParentID:   p.ParentId,
+				OrgID:      uint(p.OrgId),
 				Name:       p.Name,
 				Type:       p.Type,
-				ResourceID: p.ResourceID,
+				ResourceID: p.ResourceId,
 				Status:     p.Status,
 				StartedAt:  p.StartedAt,
 			}
@@ -157,9 +158,10 @@ func (s *GormStore) LogProcess(ctx context.Context, p process.Process) error {
 // LogProcessEvent logs a process event
 func (s *GormStore) LogProcessEvent(ctx context.Context, p process.ProcessEvent) error {
 	pem := processEventModel{
-		ProcessID: p.ProcessID,
+		ProcessID: p.ProcessId,
 		Name:      p.Name,
 		Log:       p.Log,
+		Status:    p.Status,
 		Timestamp: p.Timestamp,
 	}
 

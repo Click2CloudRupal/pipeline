@@ -16,32 +16,16 @@ package process
 
 import (
 	"context"
-	"time"
 
+	"github.com/banzaicloud/pipeline/.gen/pipeline/pipeline"
 	"github.com/banzaicloud/pipeline/src/auth"
 )
 
 // Process represents an pipeline process.
-type Process struct {
-	ID         string         `json:"id"`
-	ParentID   string         `json:"parentId"`
-	OrgID      uint           `json:"orgId"`
-	Name       string         `json:"name"`
-	Type       string         `json:"type"`
-	ResourceID string         `json:"resourceId"`
-	Status     string         `json:"status"`
-	StartedAt  time.Time      `json:"startedAt,omitempty"`
-	FinishedAt *time.Time     `json:"finishedAt,omitempty"`
-	Events     []ProcessEvent `json:"events,omitempty"`
-}
+type Process = pipeline.Process
 
 // ProcessEvent represents an pipeline process event.
-type ProcessEvent struct {
-	ProcessID string    `json:"processId"`
-	Name      string    `json:"name"`
-	Log       string    `json:"log"`
-	Timestamp time.Time `json:"timestamp,omitempty"`
-}
+type ProcessEvent = pipeline.ProcessEvent
 
 //go:generate mga gen mockery --name Service --inpkg
 // +kit:endpoint:errorStrategy=service

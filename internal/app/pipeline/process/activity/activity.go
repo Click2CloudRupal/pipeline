@@ -47,7 +47,7 @@ type ProcessLogActivity struct {
 type ProcessLogActivityInput struct {
 	ID         string
 	ParentID   string
-	OrgID      uint
+	OrgID      int32
 	Name       string
 	Type       Type
 	ResourceID string
@@ -60,17 +60,18 @@ type ProcessEventActivityInput struct {
 	ProcessID string
 	Name      string
 	Log       string
+	Status    Status
 	Timestamp time.Time
 }
 
 func (a ProcessLogActivity) ExecuteProcessLog(ctx context.Context, input ProcessLogActivityInput) (err error) {
 	_, err = a.service.LogProcess(ctx, process.Process{
-		ID:         input.ID,
-		ParentID:   input.ParentID,
-		OrgID:      input.OrgID,
+		Id:         input.ID,
+		ParentId:   input.ParentID,
+		OrgId:      input.OrgID,
 		Name:       input.Name,
 		Type:       string(input.Type),
-		ResourceID: input.ResourceID,
+		ResourceId: input.ResourceID,
 		Status:     string(input.Status),
 		StartedAt:  input.StartedAt,
 		FinishedAt: input.FinishedAt,
@@ -81,9 +82,10 @@ func (a ProcessLogActivity) ExecuteProcessLog(ctx context.Context, input Process
 
 func (a ProcessLogActivity) ExecuteProcessEvent(ctx context.Context, input ProcessEventActivityInput) (err error) {
 	_, err = a.service.LogProcessEvent(ctx, process.ProcessEvent{
-		ProcessID: input.ProcessID,
+		ProcessId: input.ProcessID,
 		Name:      input.Name,
 		Log:       input.Log,
+		Status:    string(input.Status),
 		Timestamp: input.Timestamp,
 	})
 
