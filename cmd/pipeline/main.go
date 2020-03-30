@@ -756,7 +756,8 @@ func main() {
 					repoStore := helmadapter.NewHelmRepoStore(db, commonLogger)
 					secretStore := helmadapter.NewSecretStore(commonSecretStore, commonLogger)
 					orgService := helmadapter.NewOrgService(commonLogger)
-					envResolver := helm.NewHelmEnvResolver(config.Helm.Home, orgService, commonLogger)
+					envResolver := helm.NewHelm2EnvResolver(config.Helm.Home, orgService, commonLogger)
+					h3EnvResolver := helm.NewHelm3EnvResolver(envResolver)
 					envService := helmadapter.NewHelmEnvService(helmadapter.NewConfig(config.Helm.Repositories), commonLogger)
 
 					validator := helm.NewHelmRepoValidator()
@@ -768,7 +769,7 @@ func main() {
 						repoStore,
 						secretStore,
 						validator,
-						envResolver,
+						h3EnvResolver,
 						envService,
 						releaser,
 						clusterService,
@@ -1045,7 +1046,7 @@ func main() {
 				repoStore := helmadapter.NewHelmRepoStore(db, commonLogger)
 				secretStore := helmadapter.NewSecretStore(commonSecretStore, commonLogger)
 				orgService := helmadapter.NewOrgService(commonLogger)
-				envResolver := helm.NewHelmEnvResolver(config.Helm.Home, orgService, commonLogger)
+				envResolver := helm.NewHelm2EnvResolver(config.Helm.Home, orgService, commonLogger)
 				envService := helmadapter.NewHelmEnvService(helmadapter.NewConfig(config.Helm.Repositories), commonLogger)
 
 				validator := helm.NewHelmRepoValidator()
