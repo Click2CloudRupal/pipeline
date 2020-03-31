@@ -8163,11 +8163,9 @@ components:
                     type: string
 
         ListProcessesResponse:
-                type: object
-                additionalProperties:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Process'
+            type: array
+            items:
+                $ref: '#/components/schemas/Process'
 
         Process:
             type: object

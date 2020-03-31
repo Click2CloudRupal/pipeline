@@ -23007,12 +23007,31 @@ components:
           type: string
       type: object
     ListProcessesResponse:
-      additionalProperties:
-        items:
-          $ref: '#/components/schemas/Process'
-        type: array
-      type: object
+      items:
+        $ref: '#/components/schemas/Process'
+      type: array
     Process:
+      example:
+        resourceId: resourceId
+        name: name
+        startedAt: 2000-01-23T04:56:07.000+00:00
+        id: id
+        type: cluster-upgrade
+        parentId: parentId
+        orgId: 0
+        events:
+        - processId: processId
+          log: log
+          name: name
+          status: running
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        - processId: processId
+          log: log
+          name: name
+          status: running
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        status: running
+        finishedAt: 2000-01-23T04:56:07.000+00:00
       properties:
         id:
           type: string
@@ -23047,6 +23066,12 @@ components:
           type: array
       type: object
     ProcessEvent:
+      example:
+        processId: processId
+        log: log
+        name: name
+        status: running
+        timestamp: 2000-01-23T04:56:07.000+00:00
       properties:
         processId:
           type: string
