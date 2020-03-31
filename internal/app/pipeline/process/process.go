@@ -62,13 +62,16 @@ type Store interface {
 	// LogProcess adds a process entry.
 	LogProcess(ctx context.Context, p Process) error
 
+	// GetProcess gets a process entry.
+	GetProcess(ctx context.Context, id string) (Process, error)
+
 	// LogProcessEvent adds a process event to a process.
 	LogProcessEvent(ctx context.Context, p ProcessEvent) error
 }
 
 // NotFoundError is returned if a process cannot be found.
 type NotFoundError struct {
-	ID uint
+	ID string
 }
 
 // Error implements the error interface.
@@ -98,7 +101,7 @@ func (s service) ListProcesses(ctx context.Context, query Process) ([]Process, e
 }
 
 func (s service) GetProcess(ctx context.Context, org auth.Organization, id string) (Process, error) {
-	return Process{}, nil
+	return s.store.GetProcess(ctx, id)
 }
 
 func (s service) LogProcess(ctx context.Context, p Process) (Process, error) {

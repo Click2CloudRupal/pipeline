@@ -73,6 +73,51 @@ func NewGormStore(db *gorm.DB) *GormStore {
 	}
 }
 
+// GetProcess returns the list of active processes.
+func (s *GormStore) GetProcess(ctx context.Context, id string) (process.Process, error) {
+	pm := processModel{
+		ID: id,
+	}
+
+	err := s.db.First(&pm).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return process.Process{}, process.NotFoundError{ID: id}
+		}
+		return process.Process{}, errors.Wrap(err, "failed to find process")
+	}
+
+	var processEvents []processEventModel
+
+	err = s.db.Model(&pm).Related(&processEvents, "Events").Error
+	if err != nil {
+		return process.Process{}, errors.Wrap(err, "failed to find process events")
+	}
+
+	p := process.Process{
+		Id:         pm.ID,
+		ParentId:   pm.ParentID,
+		OrgId:      int32(pm.OrgID),
+		Name:       pm.Name,
+		StartedAt:  pm.StartedAt,
+		FinishedAt: pm.FinishedAt,
+		ResourceId: pm.ResourceID,
+		Type:       pm.Type,
+		Status:     pm.Status,
+	}
+
+	for _, em := range processEvents {
+		p.Events = append(p.Events, process.ProcessEvent{
+			ProcessId: em.ProcessID,
+			Name:      em.Name,
+			Log:       em.Log,
+			Timestamp: em.Timestamp,
+		})
+	}
+
+	return p, nil
+}
+
 // ListProcesses returns the list of active processes.
 func (s *GormStore) ListProcesses(ctx context.Context, query process.Process) ([]process.Process, error) {
 	var processes []processModel
