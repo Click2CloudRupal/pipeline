@@ -8236,6 +8236,8 @@ components:
         ProcessEvent:
             type: object
             properties:
+                id:
+                    type: integer
                 processId:
                     type: string
                 name:

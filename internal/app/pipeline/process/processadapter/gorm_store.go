@@ -49,7 +49,8 @@ func (processModel) TableName() string {
 }
 
 type processEventModel struct {
-	ProcessID string
+	ID        uint      `gorm:"auto_increment,primary_key"`
+	ProcessID string    `gorm:"not null"`
 	Log       string    `gorm:"not null"`
 	Name      string    `gorm:"not null"`
 	Status    string    `gorm:"not null"`
@@ -108,6 +109,7 @@ func (s *GormStore) GetProcess(ctx context.Context, id string) (process.Process,
 
 	for _, em := range processEvents {
 		p.Events = append(p.Events, process.ProcessEvent{
+			Id:        int32(em.ID),
 			ProcessId: em.ProcessID,
 			Name:      em.Name,
 			Log:       em.Log,

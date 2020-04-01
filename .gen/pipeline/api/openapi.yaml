@@ -23162,11 +23162,13 @@ components:
         - processId: processId
           log: log
           name: name
+          id: 6
           status: running
           timestamp: 2000-01-23T04:56:07.000+00:00
         - processId: processId
           log: log
           name: name
+          id: 6
           status: running
           timestamp: 2000-01-23T04:56:07.000+00:00
         status: running
@@ -23209,9 +23211,12 @@ components:
         processId: processId
         log: log
         name: name
+        id: 6
         status: running
         timestamp: 2000-01-23T04:56:07.000+00:00
       properties:
+        id:
+          type: integer
         processId:
           type: string
         name:

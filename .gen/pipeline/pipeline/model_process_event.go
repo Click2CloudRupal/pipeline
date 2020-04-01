@@ -16,6 +16,8 @@ import (
 
 type ProcessEvent struct {
 
+	Id int32 `json:"id,omitempty"`
+
 	ProcessId string `json:"processId,omitempty"`
 
 	Name string `json:"name,omitempty"`
