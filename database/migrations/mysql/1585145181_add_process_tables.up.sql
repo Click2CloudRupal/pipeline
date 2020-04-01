@@ -14,11 +14,13 @@ CREATE TABLE `processes` (
 );
 
 CREATE TABLE `process_events` (
-  `process_id` varchar(255) DEFAULT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `process_id` varchar(255) NOT NULL,
   `log` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
   KEY `process_events_process_id_processes_id_foreign` (`process_id`),
   CONSTRAINT `process_events_process_id_processes_id_foreign` FOREIGN KEY (`process_id`) REFERENCES `processes` (`id`)
 );
