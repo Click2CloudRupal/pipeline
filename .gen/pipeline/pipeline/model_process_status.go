@@ -10,21 +10,11 @@
 
 package pipeline
 
-import (
-	"time"
+type ProcessStatus string
+
+// List of ProcessStatus
+const (
+	RUNNING ProcessStatus = "running"
+	FAILED ProcessStatus = "failed"
+	FINISHED ProcessStatus = "finished"
 )
-
-type ProcessEvent struct {
-
-	Id int32 `json:"id,omitempty"`
-
-	ProcessId string `json:"processId,omitempty"`
-
-	Name string `json:"name,omitempty"`
-
-	Log string `json:"log,omitempty"`
-
-	Status ProcessStatus `json:"status,omitempty"`
-
-	Timestamp time.Time `json:"timestamp,omitempty"`
-}

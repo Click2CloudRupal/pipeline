@@ -8219,8 +8219,7 @@ components:
                 resourceId:
                     type: string
                 status:
-                    type: string
-                    enum: [running, failed, finished]
+                    $ref: '#/components/schemas/ProcessStatus'
                 startedAt:
                     type: string
                     format: date-time
@@ -8245,8 +8244,11 @@ components:
                 log:
                     type: string
                 status:
-                    type: string
-                    enum: [running, failed, finished]
+                    $ref: '#/components/schemas/ProcessStatus'
                 timestamp:
                     type: string
                     format: date-time
+
+        ProcessStatus:
+            title: ProcessStatus
+            enum: [running, failed, finished]

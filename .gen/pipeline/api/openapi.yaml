@@ -23163,15 +23163,12 @@ components:
           log: log
           name: name
           id: 6
-          status: running
           timestamp: 2000-01-23T04:56:07.000+00:00
         - processId: processId
           log: log
           name: name
           id: 6
-          status: running
           timestamp: 2000-01-23T04:56:07.000+00:00
-        status: running
         finishedAt: 2000-01-23T04:56:07.000+00:00
       properties:
         id:
@@ -23189,11 +23186,7 @@ components:
         resourceId:
           type: string
         status:
-          enum:
-          - running
-          - failed
-          - finished
-          type: string
+          $ref: '#/components/schemas/ProcessStatus'
         startedAt:
           format: date-time
           type: string
@@ -23212,7 +23205,6 @@ components:
         log: log
         name: name
         id: 6
-        status: running
         timestamp: 2000-01-23T04:56:07.000+00:00
       properties:
         id:
@@ -23224,15 +23216,18 @@ components:
         log:
           type: string
         status:
-          enum:
-          - running
-          - failed
-          - finished
-          type: string
+          $ref: '#/components/schemas/ProcessStatus'
         timestamp:
           format: date-time
           type: string
       type: object
+    ProcessStatus:
+      enum:
+      - running
+      - failed
+      - finished
+      title: ProcessStatus
+      type: string
     CreatePKEClusterKubernetes_oidc:
       properties:
         enabled:

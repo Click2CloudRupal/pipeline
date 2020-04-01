@@ -104,7 +104,7 @@ func (s *GormStore) GetProcess(ctx context.Context, id string) (process.Process,
 		FinishedAt: pm.FinishedAt,
 		ResourceId: pm.ResourceID,
 		Type:       pm.Type,
-		Status:     pm.Status,
+		Status:     process.ProcessStatus(pm.Status),
 	}
 
 	for _, em := range processEvents {
@@ -113,6 +113,7 @@ func (s *GormStore) GetProcess(ctx context.Context, id string) (process.Process,
 			ProcessId: em.ProcessID,
 			Name:      em.Name,
 			Log:       em.Log,
+			Status:    process.ProcessStatus(em.Status),
 			Timestamp: em.Timestamp,
 		})
 	}
@@ -141,7 +142,7 @@ func (s *GormStore) ListProcesses(ctx context.Context, query process.Process) ([
 			FinishedAt: pm.FinishedAt,
 			ResourceId: pm.ResourceID,
 			Type:       pm.Type,
-			Status:     pm.Status,
+			Status:     process.ProcessStatus(pm.Status),
 		}
 
 		var processEvents []processEventModel
@@ -156,6 +157,7 @@ func (s *GormStore) ListProcesses(ctx context.Context, query process.Process) ([
 				ProcessId: em.ProcessID,
 				Name:      em.Name,
 				Log:       em.Log,
+				Status:    process.ProcessStatus(em.Status),
 				Timestamp: em.Timestamp,
 			})
 		}
@@ -180,7 +182,7 @@ func (s *GormStore) LogProcess(ctx context.Context, p process.Process) error {
 				Name:       p.Name,
 				Type:       p.Type,
 				ResourceID: p.ResourceId,
-				Status:     p.Status,
+				Status:     string(p.Status),
 				StartedAt:  p.StartedAt,
 			}
 
@@ -191,7 +193,7 @@ func (s *GormStore) LogProcess(ctx context.Context, p process.Process) error {
 		return err
 	}
 
-	existing.Status = p.Status
+	existing.Status = string(p.Status)
 	existing.FinishedAt = p.FinishedAt
 
 	err = s.db.Save(&existing).Error
@@ -208,7 +210,7 @@ func (s *GormStore) LogProcessEvent(ctx context.Context, p process.ProcessEvent)
 		ProcessID: p.ProcessId,
 		Name:      p.Name,
 		Log:       p.Log,
-		Status:    p.Status,
+		Status:    string(p.Status),
 		Timestamp: p.Timestamp,
 	}
 

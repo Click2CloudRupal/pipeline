@@ -72,7 +72,7 @@ func (a ProcessLogActivity) ExecuteProcessLog(ctx context.Context, input Process
 		Name:       input.Name,
 		Type:       string(input.Type),
 		ResourceId: input.ResourceID,
-		Status:     string(input.Status),
+		Status:     process.ProcessStatus(input.Status),
 		StartedAt:  input.StartedAt,
 		FinishedAt: input.FinishedAt,
 	})
@@ -85,7 +85,7 @@ func (a ProcessLogActivity) ExecuteProcessEvent(ctx context.Context, input Proce
 		ProcessId: input.ProcessID,
 		Name:      input.Name,
 		Log:       input.Log,
-		Status:    string(input.Status),
+		Status:    process.ProcessStatus(input.Status),
 		Timestamp: input.Timestamp,
 	})
 
