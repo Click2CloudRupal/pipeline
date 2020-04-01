@@ -89,5 +89,9 @@ func decodeListProcessesHTTPRequest(_ context.Context, r *http.Request) (interfa
 		query.ResourceId = rt[0]
 	}
 
+	if rt := values["parentId"]; len(rt) > 0 {
+		query.ParentId = rt[0]
+	}
+
 	return ListProcessesRequest{Query: query}, nil
 }

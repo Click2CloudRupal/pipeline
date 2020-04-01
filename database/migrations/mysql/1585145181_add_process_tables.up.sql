@@ -9,6 +9,7 @@ CREATE TABLE `processes` (
   `started_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `finished_at` timestamp NOT NULL DEFAULT '1970-01-01 00:00:01',
   PRIMARY KEY (`id`),
+  KEY `idx_processes_parent_id` (`parent_id`),
   KEY `idx_start_time_end_time` (`started_at`,`finished_at`)
 );
 

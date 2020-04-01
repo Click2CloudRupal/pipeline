@@ -31,8 +31,8 @@ const (
 )
 
 type processModel struct {
-	ID         string `gorm:"primary_key"`
-	ParentID   string
+	ID         string              `gorm:"primary_key"`
+	ParentID   string              `gorm:"index"`
 	OrgID      uint                `gorm:"not null"`
 	Name       string              `gorm:"not null"`
 	Type       string              `gorm:"not null"`
