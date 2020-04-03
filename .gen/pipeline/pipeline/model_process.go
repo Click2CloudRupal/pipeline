@@ -22,9 +22,9 @@ type Process struct {
 
 	OrgId int32 `json:"orgId,omitempty"`
 
-	Name string `json:"name,omitempty"`
-
 	Type string `json:"type,omitempty"`
+
+	Log string `json:"log,omitempty"`
 
 	ResourceId string `json:"resourceId,omitempty"`
 

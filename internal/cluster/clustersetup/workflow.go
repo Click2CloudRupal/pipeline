@@ -15,11 +15,14 @@
 package clustersetup
 
 import (
+	"fmt"
 	"time"
 
 	"emperror.dev/errors"
 	"go.uber.org/cadence"
 	"go.uber.org/cadence/workflow"
+
+	"github.com/banzaicloud/pipeline/internal/app/pipeline/process"
 )
 
 // WorkflowName can be used to reference the cluster setup workflow.
@@ -58,7 +61,7 @@ type Organization struct {
 }
 
 // Execute executes the cluster setup workflow.
-func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
+func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) (err error) {
 	// Default timeouts and retries
 	activityOptions := workflow.ActivityOptions{
 		ScheduleToStartTimeout: 20 * time.Minute,
@@ -73,6 +76,9 @@ func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
 	}
 	ctx = workflow.WithActivityOptions(ctx, activityOptions)
 
+	processLog := process.NewProcessLog(ctx, input.Organization.ID, fmt.Sprint(input.Cluster.ID))
+	defer processLog.End(err)
+
 	// Install the cluster manifest to the cluster (if configured)
 	if w.InstallInitManifest {
 		activityInput := InitManifestActivityInput{
@@ -81,7 +87,9 @@ func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
 			Organization:   input.Organization,
 		}
 
-		err := workflow.ExecuteActivity(ctx, InitManifestActivityName, activityInput).Get(ctx, nil)
+		processEvent := process.NewProcessEvent(ctx, InitManifestActivityName)
+		err = workflow.ExecuteActivity(ctx, InitManifestActivityName, activityInput).Get(ctx, nil)
+		processEvent.End(err)
 		if err != nil {
 			return err
 		}
@@ -92,7 +100,9 @@ func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
 			ConfigSecretID: input.ConfigSecretID,
 		}
 
-		err := workflow.ExecuteActivity(ctx, CreatePipelineNamespaceActivityName, activityInput).Get(ctx, nil)
+		processEvent := process.NewProcessEvent(ctx, CreatePipelineNamespaceActivityName)
+		err = workflow.ExecuteActivity(ctx, CreatePipelineNamespaceActivityName, activityInput).Get(ctx, nil)
+		processEvent.End(err)
 		if err != nil {
 			return err
 		}
@@ -103,7 +113,9 @@ func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
 			ConfigSecretID: input.ConfigSecretID,
 		}
 
-		err := workflow.ExecuteActivity(ctx, LabelKubeSystemNamespaceActivityName, activityInput).Get(ctx, nil)
+		processEvent := process.NewProcessEvent(ctx, InstallTillerActivityName)
+		err = workflow.ExecuteActivity(ctx, LabelKubeSystemNamespaceActivityName, activityInput).Get(ctx, nil)
+		processEvent.End(err)
 		if err != nil {
 			return err
 		}
@@ -115,7 +127,9 @@ func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
 			Distribution:   input.Cluster.Distribution,
 		}
 
-		err := workflow.ExecuteActivity(ctx, InstallTillerActivityName, activityInput).Get(ctx, nil)
+		processEvent := process.NewProcessEvent(ctx, InstallTillerActivityName)
+		err = workflow.ExecuteActivity(ctx, InstallTillerActivityName, activityInput).Get(ctx, nil)
+		processEvent.End(err)
 		if err != nil {
 			return err
 		}
@@ -130,10 +144,12 @@ func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
 		aop.HeartbeatTimeout = 1 * time.Minute
 		ctx := workflow.WithActivityOptions(ctx, aop)
 
-		err := workflow.ExecuteActivity(ctx, InstallTillerWaitActivityName, activityInput).Get(ctx, nil)
+		processEvent := process.NewProcessEvent(ctx, InstallTillerWaitActivityName)
+		err = workflow.ExecuteActivity(ctx, InstallTillerWaitActivityName, activityInput).Get(ctx, nil)
+		processEvent.End(err)
 		if err != nil {
 			if cadence.IsTimeoutError(err) {
-				return errors.New(
+				err = errors.New(
 					"Cluster setup failed because Tiller couldn't start. " +
 						"Usually this happens when worker nodes are not able to join the cluster. " +
 						"Check your network settings to make sure the worker nodes can communicate with the Kubernetes API server.",
@@ -149,8 +165,11 @@ func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
 			ClusterID: input.Cluster.ID,
 		}
 
-		err := workflow.ExecuteActivity(ctx, InstallNodePoolLabelSetOperatorActivityName, activityInput).Get(ctx, nil)
+		processEvent := process.NewProcessEvent(ctx, InstallNodePoolLabelSetOperatorActivityName)
+		err = workflow.ExecuteActivity(ctx, InstallNodePoolLabelSetOperatorActivityName, activityInput).Get(ctx, nil)
+		processEvent.End(err)
 		if err != nil {
+			processEvent.End(err)
 			return err
 		}
 	}
@@ -161,7 +180,9 @@ func (w Workflow) Execute(ctx workflow.Context, input WorkflowInput) error {
 			Labels:         input.NodePoolLabels,
 		}
 
-		err := workflow.ExecuteActivity(ctx, ConfigureNodePoolLabelsActivityName, activityInput).Get(ctx, nil)
+		processEvent := process.NewProcessEvent(ctx, ConfigureNodePoolLabelsActivityName)
+		err = workflow.ExecuteActivity(ctx, ConfigureNodePoolLabelsActivityName, activityInput).Get(ctx, nil)
+		processEvent.End(err)
 		if err != nil {
 			return err
 		}

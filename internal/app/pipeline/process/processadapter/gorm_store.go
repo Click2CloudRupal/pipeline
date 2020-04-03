@@ -34,8 +34,8 @@ type processModel struct {
 	ID         string              `gorm:"primary_key"`
 	ParentID   string              `gorm:"index"`
 	OrgID      uint                `gorm:"not null"`
-	Name       string              `gorm:"not null"`
 	Type       string              `gorm:"not null"`
+	Log        string              `gorm:"type:text"`
 	ResourceID string              `gorm:"not null"`
 	Status     string              `gorm:"not null"`
 	StartedAt  time.Time           `gorm:"index:idx_start_time_end_time;default:current_timestamp;not null"`
@@ -51,8 +51,8 @@ func (processModel) TableName() string {
 type processEventModel struct {
 	ID        uint      `gorm:"auto_increment,primary_key"`
 	ProcessID string    `gorm:"not null"`
-	Log       string    `gorm:"not null"`
-	Name      string    `gorm:"not null"`
+	Type      string    `gorm:"not null"`
+	Log       string    `gorm:"type:text"`
 	Status    string    `gorm:"not null"`
 	Timestamp time.Time `gorm:"default:current_timestamp;not null"`
 }
@@ -99,11 +99,11 @@ func (s *GormStore) GetProcess(ctx context.Context, id string) (process.Process,
 		Id:         pm.ID,
 		ParentId:   pm.ParentID,
 		OrgId:      int32(pm.OrgID),
-		Name:       pm.Name,
+		Type:       pm.Type,
+		Log:        pm.Log,
 		StartedAt:  pm.StartedAt,
 		FinishedAt: pm.FinishedAt,
 		ResourceId: pm.ResourceID,
-		Type:       pm.Type,
 		Status:     process.ProcessStatus(pm.Status),
 	}
 
@@ -111,7 +111,7 @@ func (s *GormStore) GetProcess(ctx context.Context, id string) (process.Process,
 		p.Events = append(p.Events, process.ProcessEvent{
 			Id:        int32(em.ID),
 			ProcessId: em.ProcessID,
-			Name:      em.Name,
+			Type:      em.Type,
 			Log:       em.Log,
 			Status:    process.ProcessStatus(em.Status),
 			Timestamp: em.Timestamp,
@@ -137,7 +137,7 @@ func (s *GormStore) ListProcesses(ctx context.Context, query process.Process) ([
 			Id:         pm.ID,
 			ParentId:   pm.ParentID,
 			OrgId:      int32(pm.OrgID),
-			Name:       pm.Name,
+			Log:        pm.Log,
 			StartedAt:  pm.StartedAt,
 			FinishedAt: pm.FinishedAt,
 			ResourceId: pm.ResourceID,
@@ -155,7 +155,7 @@ func (s *GormStore) ListProcesses(ctx context.Context, query process.Process) ([
 		for _, em := range processEvents {
 			p.Events = append(p.Events, process.ProcessEvent{
 				ProcessId: em.ProcessID,
-				Name:      em.Name,
+				Type:      em.Type,
 				Log:       em.Log,
 				Status:    process.ProcessStatus(em.Status),
 				Timestamp: em.Timestamp,
@@ -179,7 +179,7 @@ func (s *GormStore) LogProcess(ctx context.Context, p process.Process) error {
 				ID:         p.Id,
 				ParentID:   p.ParentId,
 				OrgID:      uint(p.OrgId),
-				Name:       p.Name,
+				Log:        p.Log,
 				Type:       p.Type,
 				ResourceID: p.ResourceId,
 				Status:     string(p.Status),
@@ -208,7 +208,7 @@ func (s *GormStore) LogProcess(ctx context.Context, p process.Process) error {
 func (s *GormStore) LogProcessEvent(ctx context.Context, p process.ProcessEvent) error {
 	pem := processEventModel{
 		ProcessID: p.ProcessId,
-		Name:      p.Name,
+		Type:      p.Type,
 		Log:       p.Log,
 		Status:    string(p.Status),
 		Timestamp: p.Timestamp,

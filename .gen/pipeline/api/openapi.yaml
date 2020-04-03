@@ -23152,22 +23152,22 @@ components:
     Process:
       example:
         resourceId: resourceId
-        name: name
+        log: log
         startedAt: 2000-01-23T04:56:07.000+00:00
         id: id
-        type: cluster-upgrade
+        type: type
         parentId: parentId
         orgId: 0
         events:
         - processId: processId
           log: log
-          name: name
           id: 6
+          type: type
           timestamp: 2000-01-23T04:56:07.000+00:00
         - processId: processId
           log: log
-          name: name
           id: 6
+          type: type
           timestamp: 2000-01-23T04:56:07.000+00:00
         finishedAt: 2000-01-23T04:56:07.000+00:00
       properties:
@@ -23177,11 +23177,9 @@ components:
           type: string
         orgId:
           type: integer
-        name:
-          type: string
         type:
-          enum:
-          - cluster-upgrade
+          type: string
+        log:
           type: string
         resourceId:
           type: string
@@ -23203,15 +23201,15 @@ components:
       example:
         processId: processId
         log: log
-        name: name
         id: 6
+        type: type
         timestamp: 2000-01-23T04:56:07.000+00:00
       properties:
         id:
           type: integer
         processId:
           type: string
-        name:
+        type:
           type: string
         log:
           type: string

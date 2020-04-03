@@ -8209,13 +8209,10 @@ components:
                     type: string
                 orgId:
                     type: integer
-                name:
-                    type: string
-                orgId:
-                    type: integer
                 type:
                     type: string
-                    enum: [cluster-upgrade]
+                log:
+                    type: string
                 resourceId:
                     type: string
                 status:
@@ -8239,7 +8236,7 @@ components:
                     type: integer
                 processId:
                     type: string
-                name:
+                type:
                     type: string
                 log:
                     type: string

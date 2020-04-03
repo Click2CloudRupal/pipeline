@@ -20,7 +20,7 @@ type ProcessEvent struct {
 
 	ProcessId string `json:"processId,omitempty"`
 
-	Name string `json:"name,omitempty"`
+	Type string `json:"type,omitempty"`
 
 	Log string `json:"log,omitempty"`
 

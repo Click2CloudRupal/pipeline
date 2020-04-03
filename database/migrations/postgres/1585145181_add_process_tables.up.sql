@@ -2,8 +2,8 @@ CREATE TABLE "public"."processes" (
     "id" text NOT NULL,
     "parent_id" text,
     "org_id" int4 NOT NULL,
-    "name" text NOT NULL,
     "type" text NOT NULL,
+    "log" text,
     "resource_id" text NOT NULL,
     "status" text NOT NULL,
     "started_at" timestamptz NOT NULL DEFAULT now(),
@@ -18,8 +18,8 @@ CREATE INDEX idx_start_time_end_time ON processes USING btree (started_at, finis
 CREATE TABLE "public"."process_events" (
     "id" serial,
     "process_id" text NOT NULL,
-    "log" text NOT NULL,
-    "name" text NOT NULL,
+    "type" text NOT NULL,
+    "log" text,
     "status" text NOT NULL,
     "timestamp" timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT "process_events_process_id_processes_id_foreign" FOREIGN KEY ("process_id") REFERENCES "public"."processes"("id") ON DELETE RESTRICT ON UPDATE RESTRICT
