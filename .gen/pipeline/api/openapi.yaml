@@ -18077,6 +18077,14 @@ paths:
         schema:
           type: string
         style: form
+      - description: The status of processes to query
+        explode: true
+        in: query
+        name: status
+        required: false
+        schema:
+          $ref: '#/components/schemas/ProcessStatus'
+        style: form
       responses:
         "200":
           content:

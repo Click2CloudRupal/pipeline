@@ -23,6 +23,7 @@ import (
 	"github.com/gorilla/mux"
 	kitxhttp "github.com/sagikazarmark/kitx/transport/http"
 
+	"github.com/banzaicloud/pipeline/.gen/pipeline/pipeline"
 	"github.com/banzaicloud/pipeline/internal/app/pipeline/process"
 	apphttp "github.com/banzaicloud/pipeline/internal/platform/appkit/transport/http"
 	"github.com/banzaicloud/pipeline/src/auth"
@@ -91,6 +92,10 @@ func decodeListProcessesHTTPRequest(_ context.Context, r *http.Request) (interfa
 
 	if rt := values["parentId"]; len(rt) > 0 {
 		query.ParentId = rt[0]
+	}
+
+	if rt := values["status"]; len(rt) > 0 {
+		query.Status = pipeline.ProcessStatus(rt[0])
 	}
 
 	return ListProcessesRequest{Query: query}, nil
