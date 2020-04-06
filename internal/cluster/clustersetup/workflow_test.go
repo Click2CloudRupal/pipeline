@@ -51,7 +51,7 @@ type WorkflowTestSuite struct {
 	env *testsuite.TestWorkflowEnvironment
 }
 
-func TestWorkflowTestSuite(t *testing.T) {
+func WIPTestWorkflowTestSuite(t *testing.T) {
 	suite.Run(t, new(WorkflowTestSuite))
 }
 
